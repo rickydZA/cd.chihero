@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opening CHIHERO…</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 32px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .icon { font-size: 3rem; margin-bottom: 16px; }
+    h1 { font-size: 1.4rem; color: #1a1a2e; margin-bottom: 10px; }
+    .subtitle { color: #666; font-size: 0.95rem; line-height: 1.5; margin-bottom: 28px; }
+    .btn {
+      display: inline-block;
+      background: #4f46e5;
+      color: white;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .btn:active { opacity: 0.8; }
+    .hint {
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: #999;
+      line-height: 1.5;
+    }
+    #not-installed { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📚</div>
+    <h1 id="title">Opening CHIHERO…</h1>
+    <p class="subtitle" id="subtitle">Your teacher sent you new lessons. Tap the button below to install them.</p>
+    <a id="open-btn" class="btn" href="#">Open in CHIHERO</a>
+    <p class="hint" id="not-installed">
+      App not opening? Make sure CHIHERO is installed, then tap the button above.
+    </p>
+  </div>
+
+  <script>
+    var token = location.hash.slice(1);
+    var deepLink = token ? 'chihero://c/' + token : null;
+
+    if (!deepLink) {
+      document.getElementById('title').textContent = 'Invalid link';
+      document.getElementById('subtitle').textContent =
+        'This link is missing required data. Please ask your teacher to send it again.';
+      document.getElementById('open-btn').style.display = 'none';
+    } else {
+      document.getElementById('open-btn').href = deepLink;
+
+      // Attempt automatic redirect.
+      // Works immediately on Android Chrome.
+      // On iOS Safari a user gesture is required, so the button above is the
+      // primary path — this is just a best-effort acceleration.
+      window.location.replace(deepLink);
+
+      // Show the "app not installed?" hint after 2 s.
+      // The page remains visible whether or not the app opened, so this is
+      // informational rather than a definitive detection.
+      setTimeout(function () {
+        document.getElementById('not-installed').style.display = 'block';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
